@@ -1,3 +1,5 @@
+import cloud from "@tbmp/mp-cloud-sdk"
+
 export function checkFollow (uid) {
   return new Promise(resolve => {
     my.tb.checkShopFavoredStatus({

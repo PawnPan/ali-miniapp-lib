@@ -1,6 +1,6 @@
 {
   "name": "ali-miniapp-lib",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "ali miniapp API encapsulation",
   "main": "index.js",
   "scripts": {
