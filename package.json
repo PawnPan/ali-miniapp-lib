@@ -1,11 +1,14 @@
 {
   "name": "ali-miniapp-lib",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ali miniapp API encapsulation",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pawn Pan",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@tbmp/mp-cloud-sdk": "^1.1.4-test14"
+  }
 }
