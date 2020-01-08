@@ -64,3 +64,57 @@ export function openShop (sid) {
 export function doShare () {
   my.showSharePanel()
 }
+
+export class HttpRequest {
+  constructor (cloudId, initParam) {
+    const param = initParam || {
+      env: 'test'
+    }
+
+    cloud.init(param)
+    this.cloud = cloud
+
+    if (cloudId) {
+      this.cloudId = cloudId
+    }
+  }
+
+  async request (params) {
+    const config = { ...params }
+    if (this.cloudId) {
+      config['exts'] = { cloudAppId: this.cloudId }
+    }
+
+    console.log('application.httpRequest config: ', config)
+
+    return this.cloud.application.httpRequest(config)
+  }
+
+  async get (path, params, headers) {
+    const config = {
+      path,
+      method: 'GET',
+      params
+    }
+    if (headers) {
+      config['headers'] = headers
+    }
+    return this.request(config)
+  }
+
+  // content type 会被强制重写成applicaton/json，
+  async post (path, params, headers) {
+    const config = {
+      path,
+      method: 'POST',
+      params,
+      headers: Object.assign(
+        { ...(headers || {}) },
+        {
+          'Content-Type': 'application/json'
+        }
+      )
+    }
+  }
+}
+
