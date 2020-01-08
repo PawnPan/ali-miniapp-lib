@@ -82,7 +82,7 @@ export class HttpRequest {
   }
 
   async request (params) {
-    const config = { ...params }
+    const config = Object.assign({}, params)
     if (this.cloudId) {
       config['exts'] = { cloudAppId: this.cloudId }
     }
@@ -111,7 +111,8 @@ export class HttpRequest {
       method: 'POST',
       params,
       headers: Object.assign(
-        { ...(headers || {}) },
+        {},
+        headers, 
         {
           'Content-Type': 'application/json'
         }
