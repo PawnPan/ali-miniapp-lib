@@ -1,4 +1,4 @@
-import cloud from "@tbmp/mp-cloud-sdk"
+import cloud from '@tbmp/mp-cloud-sdk'
 
 export function checkFollow (uid) {
   return new Promise(resolve => {
@@ -22,6 +22,7 @@ export function doFollow (uid) {
 
 function doAuth () {
   return new Promise(resolve => {
+    console.log('before auth')
     my.authorize({
       scopes: 'scope.userInfo',
       success: res => {
@@ -30,6 +31,9 @@ function doAuth () {
       },
       fail: res => {
         console.log('auth failed, ', res)
+      },
+      complete: res => {
+        console.log('auth complete. ', res)
       }
     })
   })
@@ -65,6 +69,12 @@ export function openShop (sid) {
 
 export function doShare () {
   my.showSharePanel()
+}
+
+export function openItem (itemId) {
+  my.tb.openDetail({
+    itemId
+  })
 }
 
 export class HttpRequest {
@@ -110,14 +120,9 @@ export class HttpRequest {
       path,
       method: 'POST',
       params,
-      headers: Object.assign(
-        {},
-        headers, 
-        {
-          'Content-Type': 'application/json'
-        }
-      )
+      headers: Object.assign({}, headers, {
+        'Content-Type': 'application/json'
+      })
     }
   }
 }
-
