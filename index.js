@@ -1,4 +1,4 @@
-import cloud from '@tbmp/mp-cloud-sdk'
+import cloud from "@tbmp/mp-cloud-sdk"
 
 export function checkFollow (uid) {
   return new Promise(resolve => {
@@ -6,6 +6,9 @@ export function checkFollow (uid) {
       id: uid,
       success: res => {
         resolve(res)
+      },
+      fail: res => {
+        throw res
       }
     })
   })
@@ -22,7 +25,7 @@ export function doFollow (uid) {
 
 function doAuth () {
   return new Promise(resolve => {
-    console.log('before auth')
+    console.log("before auth")
     my.authorize({
       scopes: 'scope.userInfo',
       success: res => {
@@ -33,7 +36,7 @@ function doAuth () {
         console.log('auth failed, ', res)
       },
       complete: res => {
-        console.log('auth complete. ', res)
+        console.log("auth complete. ", res)
       }
     })
   })
@@ -71,9 +74,9 @@ export function doShare () {
   my.showSharePanel()
 }
 
-export function openItem (itemId) {
+export function openItem(itemId) {
   my.tb.openDetail({
-    itemId
+    itemId,
   })
 }
 
@@ -120,9 +123,14 @@ export class HttpRequest {
       path,
       method: 'POST',
       params,
-      headers: Object.assign({}, headers, {
-        'Content-Type': 'application/json'
-      })
+      headers: Object.assign(
+        {},
+        headers, 
+        {
+          'Content-Type': 'application/json'
+        }
+      )
     }
+    return this.request(config)
   }
 }
