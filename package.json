@@ -1,14 +1,25 @@
 {
   "name": "ali-miniapp-lib",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "ali miniapp API encapsulation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cleanLib": "./node_modules/.bin/rimraf lib",
+    "bableBuild": "./node_modules/.bin/babel src --out-dir lib",
+    "prepublish": "npm run cleanLib && npm run bableBuild"
   },
   "author": "Pawn Pan",
   "license": "ISC",
   "dependencies": {
-    "@tbmp/mp-cloud-sdk": "^1.2.2"
+    "@tbmp/mp-cloud-sdk": "^1.2.2",
+    "babel-runtime": "^6.26.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "rimraf": "^3.0.1"
   }
 }
