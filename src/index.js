@@ -64,9 +64,6 @@ export function openShop (sid) {
     {
       url
     },
-    res => {
-      my.alert({ content: 'success - ' + JSON.stringify(res) })
-    }
   )
 }
 
@@ -76,7 +73,7 @@ export function doShare () {
 
 export function openItem(itemId) {
   my.tb.openDetail({
-    itemId,
+    itemId: itemId + "",
   })
 }
 
