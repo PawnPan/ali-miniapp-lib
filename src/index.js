@@ -15,10 +15,11 @@ export function checkFollow (uid) {
 }
 
 export function doFollow (uid) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     my.tb.favorShop({
       id: uid,
-      success: res => resolve(res)
+      success: res => resolve(res),
+      fail: reject
     })
   })
 }
@@ -41,6 +42,35 @@ function doAuth () {
     })
   })
 }
+
+export function addCartItem(iid) {
+  return new Promise((resolve, reject) => {
+    const param = {
+      itemId: iid,
+      success: res => {
+        if (res.skuCloseFrom === "closeBtn" || res.skuCloseFrom === "") {
+          reject();
+        } else {
+          resolve();
+        }
+      },
+      fail: reject,
+    };
+    my.tb.showSku(param);
+  });
+}
+
+export function favorItem(iid) {
+  return new Promise((resolve, reject) => {
+    const params = {
+      id: +iid,
+      success: resolve,
+      fail: reject,
+    };
+    my.tb.collectGoods(params);
+  });
+}
+
 
 export async function getAuthUserInfo () {
   const auth = await doAuth()
