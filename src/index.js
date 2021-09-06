@@ -1,46 +1,64 @@
-import cloud from "@tbmp/mp-cloud-sdk"
+import cloud from "@tbmp/mp-cloud-sdk";
 
-export function checkFollow (uid) {
+export function checkFollow(uid) {
   return new Promise(resolve => {
     my.tb.checkShopFavoredStatus({
       id: uid,
       success: res => {
-        resolve(res)
+        resolve(res);
       },
       fail: res => {
-        throw res
-      }
-    })
-  })
+        throw res;
+      },
+    });
+  });
 }
 
-export function doFollow (uid) {
+export function doFollow(uid) {
   return new Promise((resolve, reject) => {
     my.tb.favorShop({
       id: uid,
       success: res => resolve(res),
-      fail: reject
-    })
-  })
+      fail: reject,
+    });
+  });
 }
 
-function doAuth () {
+function doAuth() {
   return new Promise((resolve, reject) => {
+    my.showLoading({ content: "呼起授权中..." });
     my.authorize({
-      scopes: 'scope.userInfo',
+      scopes: "scope.userInfo",
       success: res => {
-        console.log('auth success, ', res)
-        resolve(res)
+        console.log("auth success, ", res);
+        resolve(res);
       },
       fail: res => {
-        console.log('auth failed, ', res)
-        reject(res)
+        console.log("auth failed, ", res);
+        reject(res);
       },
       complete: res => {
-        console.log("auth complete. ", res)
-      }
-    })
-  })
+        my.hideLoading();
+        console.log("auth complete. ", res);
+      },
+    });
+  });
+}
+
+export async function getAuthUserInfo() {
+  const auth = await doAuth();
+  return new Promise((resolve, reject) => {
+    my.getAuthUserInfo({
+      success: res => {
+        console.log("load user info success, ", res);
+        resolve(res);
+      },
+      fail: res => {
+        console.log("get auth user info failed. ", res);
+        reject(res);
+      },
+    });
+  });
 }
 
 export function addCartItem(iid) {
@@ -71,94 +89,70 @@ export function favorItem(iid) {
   });
 }
 
-
-export async function getAuthUserInfo () {
-  const auth = await doAuth()
-  return new Promise((resolve, reject) => {
-    my.getAuthUserInfo({
-      success: res => {
-        console.log('load user info success, ', res)
-        resolve(res)
-      },
-      fail: res => {
-        console.log('get auth user info failed. ', res)
-        reject(res)
-      }
-    })
-  })
+export function openShop(sid) {
+  const url = "https://shop" + sid + ".taobao.com/";
+  my.call("navigateToOutside", {
+    url,
+  });
 }
 
-export function openShop (sid) {
-  const url = 'https://shop' + sid + '.taobao.com/'
-  my.call(
-    'navigateToOutside',
-    {
-      url
-    },
-  )
-}
-
-export function doShare () {
-  my.showSharePanel()
+export function doShare() {
+  my.showSharePanel();
 }
 
 export function openItem(itemId) {
   my.tb.openDetail({
     itemId: itemId + "",
-  })
+  });
 }
 
 export class HttpRequest {
-  constructor (cloudId, initParam) {
+  constructor(cloudId, initParam) {
     const param = initParam || {
-      env: 'test'
-    }
+      env: "test",
+    };
 
-    cloud.init(param)
-    this.cloud = cloud
+    cloud.init(param);
+    this.cloud = cloud;
 
     if (cloudId) {
-      this.cloudId = cloudId
+      this.cloudId = cloudId;
     }
   }
 
-  async request (params) {
-    const config = Object.assign({}, params)
+  async request(params) {
+    const config = Object.assign({}, params);
     if (this.cloudId) {
-      config['exts'] = { cloudAppId: this.cloudId }
+      config["exts"] = { cloudAppId: this.cloudId };
     }
 
-    console.log('application.httpRequest config: ', config)
+    console.log("application.httpRequest config: ", config);
 
-    return this.cloud.application.httpRequest(config)
+    return this.cloud.application.httpRequest(config);
   }
 
-  async get (path, params, headers) {
+  async get(path, params, headers) {
     const config = {
       path,
-      method: 'GET',
-      params
-    }
+      method: "GET",
+      params,
+    };
     if (headers) {
-      config['headers'] = headers
+      config["headers"] = headers;
     }
-    return this.request(config)
+    return this.request(config);
   }
 
   // content type 会被强制重写成applicaton/json，
-  async post (path, params, headers) {
+  async post(path, params, headers) {
     const config = {
       path,
-      method: 'POST',
+      method: "POST",
       params,
-      headers: Object.assign(
-        {},
-        headers, 
-        {
-          'Content-Type': 'application/json'
-        }
-      )
-    }
-    return this.request(config)
+      headers: Object.assign({}, headers, {
+        "Content-Type": "application/json",
+      }),
+    };
+    return this.request(config);
   }
 }
