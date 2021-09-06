@@ -25,8 +25,7 @@ export function doFollow (uid) {
 }
 
 function doAuth () {
-  return new Promise(resolve => {
-    console.log("before auth")
+  return new Promise((resolve, reject) => {
     my.authorize({
       scopes: 'scope.userInfo',
       success: res => {
@@ -35,6 +34,7 @@ function doAuth () {
       },
       fail: res => {
         console.log('auth failed, ', res)
+        reject(res)
       },
       complete: res => {
         console.log("auth complete. ", res)
@@ -74,7 +74,7 @@ export function favorItem(iid) {
 
 export async function getAuthUserInfo () {
   const auth = await doAuth()
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     my.getAuthUserInfo({
       success: res => {
         console.log('load user info success, ', res)
@@ -82,6 +82,7 @@ export async function getAuthUserInfo () {
       },
       fail: res => {
         console.log('get auth user info failed. ', res)
+        reject(res)
       }
     })
   })
