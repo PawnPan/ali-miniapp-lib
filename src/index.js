@@ -1,13 +1,13 @@
 import cloud from "@tbmp/mp-cloud-sdk";
 
 export function checkFollow(uid) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     my.tb.checkShopFavoredStatus({
       id: uid,
-      success: res => {
+      success: (res) => {
         resolve(res);
       },
-      fail: res => {
+      fail: (res) => {
         throw res;
       },
     });
@@ -18,7 +18,7 @@ export function doFollow(uid) {
   return new Promise((resolve, reject) => {
     my.tb.favorShop({
       id: uid,
-      success: res => resolve(res),
+      success: (res) => resolve(res),
       fail: reject,
     });
   });
@@ -29,15 +29,15 @@ function doAuth() {
     my.showLoading({ content: "呼起授权中..." });
     my.authorize({
       scopes: "scope.userInfo",
-      success: res => {
+      success: (res) => {
         console.log("auth success, ", res);
         resolve(res);
       },
-      fail: res => {
+      fail: (res) => {
         console.log("auth failed, ", res);
         reject(res);
       },
-      complete: res => {
+      complete: (res) => {
         my.hideLoading();
         console.log("auth complete. ", res);
       },
@@ -49,11 +49,11 @@ export async function getAuthUserInfo() {
   const auth = await doAuth();
   return new Promise((resolve, reject) => {
     my.getAuthUserInfo({
-      success: res => {
+      success: (res) => {
         console.log("load user info success, ", res);
         resolve(res);
       },
-      fail: res => {
+      fail: (res) => {
         console.log("get auth user info failed. ", res);
         reject(res);
       },
@@ -65,7 +65,7 @@ export function addCartItem(iid) {
   return new Promise((resolve, reject) => {
     const param = {
       itemId: iid,
-      success: res => {
+      success: (res) => {
         if (res.skuCloseFrom === "closeBtn" || res.skuCloseFrom === "") {
           reject();
         } else {
@@ -107,7 +107,8 @@ export function openItem(itemId) {
 }
 
 export class HttpRequest {
-  constructor(cloudId, initParam) {
+  headers = {};
+  constructor(cloudId, initParam, headers) {
     const param = initParam || {
       env: "test",
     };
@@ -118,12 +119,18 @@ export class HttpRequest {
     if (cloudId) {
       this.cloudId = cloudId;
     }
+    this.headers = headers;
   }
 
   async request(params) {
     const config = Object.assign({}, params);
     if (this.cloudId) {
       config["exts"] = { cloudAppId: this.cloudId };
+    }
+    if (config.headers) {
+      config.headers = Object.assign(this.headers, config.headers);
+    } else {
+      config.headers = this.headers;
     }
 
     console.log("application.httpRequest config: ", config);
